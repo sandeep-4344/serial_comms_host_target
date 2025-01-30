@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-#define SERIAL_PORT "/dev/ttyS0"  
+
 #define BAUD_RATE B2400
 #define MAX_BUF_SIZE 1024
 #define INPUT_FILE "received_data.txt"
@@ -16,7 +16,7 @@ int main() {
 
 int bytes_read;
 int i=0;
-int total_bytes_received;
+int total_bytes_received = 0;
 char buffer[MAX_BUF_SIZE];
 //double temp = 0, previous = 0,rate = 0;
 unsigned char byte;
@@ -24,7 +24,7 @@ unsigned char byte;
 
     // Open the serial port
     const char *serial_port = "/dev/ttyUSB0";
-    const char *serial_port_host = "/dev/ttyS0";
+  //sudo  const char *serial_port_host = "/dev/ttyS0";
     int serial_fd = open(serial_port, O_RDWR);
 
     if (serial_fd == -1) {
@@ -65,7 +65,7 @@ unsigned char byte;
 close(serial_fd);
 
 //reconfiguring serial port
-  serial_fd = open(serial_port_host, O_RDWR);
+  serial_fd = open(serial_port, O_RDWR);
 
     if (serial_fd == -1) {
         perror("Unable to open serial port");
@@ -95,13 +95,12 @@ close(serial_fd);
 
     tcsetattr(serial_fd, TCSANOW, &options);
       
-    printf("Listening for data on %s...\n", serial_port_host);
+    printf("Listening for data on %s...\n", serial_port);
   while (1) {
         int bytes_read = read(serial_fd, &byte, 1);
         if (bytes_read > 0) {
             
             total_bytes_received++;
-
             
             // Printing each byte received
             printf("Received: %c \n", byte);
@@ -115,4 +114,3 @@ close(serial_fd);
     close(serial_fd);
     return 0;
 }
-
